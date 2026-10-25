@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Admin - Andra Travel</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, sans-serif; background: #f4f5f7; margin: 0; color: #1a1a1a; }
+  header { background: #1a5c3a; color: #fff; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; }
+  header h1 { font-size: 18px; margin: 0; }
+  header button { background: rgba(255,255,255,.15); color: #fff; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; }
+  main { max-width: 860px; margin: 24px auto; padding: 0 16px 60px; }
+  .card { background: #fff; border-radius: 10px; padding: 24px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .card h2 { margin-top: 0; font-size: 16px; }
+  .card h3 { font-size: 13px; color: #555; margin: 20px 0 4px; text-transform: uppercase; letter-spacing: .04em; }
+  label { display: block; font-size: 13px; font-weight: 600; margin: 12px 0 4px; }
+  input, textarea { width: 100%; padding: 9px 10px; border: 1px solid #d7d7d7; border-radius: 6px; font-size: 14px; font-family: inherit; }
+  textarea { min-height: 70px; resize: vertical; }
+  .btn { background: #1a5c3a; color: #fff; border: none; padding: 10px 18px; border-radius: 6px; cursor: pointer; font-size: 14px; margin-top: 16px; }
+  .btn.secondary { background: #6b7280; }
+  .btn.danger { background: #b91c1c; }
+  .row { display: flex; gap: 14px; align-items: center; border: 1px solid #e5e5e5; border-radius: 8px; padding: 10px; margin-bottom: 10px; }
+  .row img { width: 70px; height: 50px; object-fit: cover; border-radius: 4px; background: #eee; }
+  .row .info { flex: 1; font-size: 13px; }
+  .row .info b { display: block; font-size: 14px; }
+  .row-actions button { font-size: 12px; padding: 5px 10px; }
+  .logo-preview { width: 90px; height: 60px; object-fit: contain; background: #f1f1f1; border-radius: 6px; margin-top: 8px; display: block; }
+  #login-screen { max-width: 340px; margin: 100px auto; }
+  .msg { font-size: 13px; padding: 8px 10px; border-radius: 6px; margin-top: 10px; }
+  .msg.ok { background: #dcfce7; color: #166534; }
+  .msg.err { background: #fee2e2; color: #991b1b; }
+  .hidden { display: none; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+</style>
+</head>
+<body>
+
+<div id="login-screen" class="card">
+  <h2>Login Admin</h2>
+  <label>Username</label>
+  <input id="login-username" type="text" />
+  <label>Password</label>
+  <input id="login-password" type="password" />
+  <button class="btn" onclick="doLogin()">Masuk</button>
+  <div id="login-msg"></div>
+</div>
+
+<div id="panel" class="hidden">
+  <header>
+    <h1>Panel Admin — Andra Travel</h1>
+    <button onclick="doLogout()">Logout</button>
+  </header>
+  <main>
+
+    <div class="card">
+      <h2>Header</h2>
+      <label>Logo (kosongkan kalau tidak ganti)</label>
+      <input id="s-logo" type="file" accept="image/*" />
+      <img id="logo-preview" class="logo-preview hidden" />
+      <label>Teks Tombol CTA di Header</label>
+      <input id="s-header_cta_text" type="text" placeholder="Hubungi Admin" />
+      <p style="font-size:12px;color:#888;margin-top:4px;">Tombol ini otomatis link ke WhatsApp pakai nomor & pesan default di bawah.</p>
+
+      <h3>Menu Navigasi</h3>
+      <div id="nav-list"></div>
+      <div class="two-col">
+        <div>
+          <label>Label Menu</label>
+          <input id="n-label" type="text" placeholder="Armada" />
+        </div>
+        <div>
+          <label>Link (#id-section atau URL)</label>
+          <input id="n-href" type="text" placeholder="#armada" />
+        </div>
+      </div>
+      <input type="hidden" id="n-id" />
+      <button class="btn" onclick="saveNav()">Simpan Menu</button>
+      <button class="btn secondary" onclick="resetNavForm()">Batal Edit</button>
+      <div id="nav-msg"></div>
+    </div>
+
+    <div class="card">
+      <h2>Hero & Kontak</h2>
+      <label>Nomor WhatsApp (format 628xxx)</label>
+      <input id="s-whatsapp" type="text" />
+      <label>Pesan Default WhatsApp</label>
+      <input id="s-wa_message" type="text" />
+      <label>Judul Hero</label>
+      <input id="s-hero_title" type="text" />
+      <label>Subjudul Hero</label>
+      <textarea id="s-hero_subtitle"></textarea>
+    </div>
+
+    <div class="card">
+      <h2>Footer</h2>
+      <p style="font-size:12px;color:#888;">Kolom 1 (logo) pakai logo yang sama dengan header di atas.</p>
+      <label>Kolom 2 — Alamat Operasional</label>
+      <input id="s-footer_address" type="text" />
+      <label>Kolom 3 — Teks Tombol/Link CTA</label>
+      <input id="s-footer_cta_text" type="text" placeholder="Chat WhatsApp Admin" />
+      <button class="btn" onclick="saveSettings()">Simpan Semua Pengaturan Header/Hero/Footer</button>
+      <div id="settings-msg"></div>
+    </div>
+
+    <div class="card">
+      <h2>Tambah / Edit Armada</h2>
+      <input type="hidden" id="f-id" />
+      <label>Nama Mobil</label>
+      <input id="f-name" type="text" />
+      <label>Harga per Hari</label>
+      <input id="f-price" type="text" placeholder="Rp 650.000 / hari" />
+      <label>Kapasitas Penumpang</label>
+      <input id="f-capacity" type="text" placeholder="6 Orang" />
+      <label>Foto Mobil</label>
+      <input id="f-image" type="file" accept="image/*" />
+      <button class="btn" onclick="saveFleet()">Simpan Armada</button>
+      <button class="btn secondary" onclick="resetFleetForm()">Batal Edit</button>
+      <div id="fleet-msg"></div>
+    </div>
+
+    <div class="card">
+      <h2>Daftar Armada</h2>
+      <div id="fleet-list"></div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const API = '/api';
+let currentLogoUrl = '';
+
+function showMsg(el, text, ok) {
+  el.innerHTML = `<div class="msg ${ok ? 'ok' : 'err'}">${text}</div>`;
+  setTimeout(() => el.innerHTML = '', 4000);
+}
+
+async function doLogin() {
+  const username = document.getElementById('login-username').value;
+  const password = document.getElementById('login-password').value;
+  const res = await fetch(`${API}/admin/login.php`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password }),
+  });
+  const data = await res.json();
+  if (res.ok) { initPanel(); }
+  else { showMsg(document.getElementById('login-msg'), data.error || 'Login gagal', false); }
+}
+
+async function doLogout() {
+  await fetch(`${API}/admin/logout.php`, { method: 'POST', credentials: 'include' });
+  location.reload();
+}
+
+async function initPanel() {
+  document.getElementById('login-screen').classList.add('hidden');
+  document.getElementById('panel').classList.remove('hidden');
+  await loadSettings();
+  await loadNav();
+  await loadFleets();
+}
+
+// ---------- Settings (header/hero/footer) ----------
+async function loadSettings() {
+  const res = await fetch(`${API}/admin/settings.php`, { credentials: 'include' });
+  if (!res.ok) return;
+  const s = await res.json();
+  document.getElementById('s-whatsapp').value = s.whatsapp || '';
+  document.getElementById('s-wa_message').value = s.wa_message || '';
+  document.getElementById('s-hero_title').value = s.hero_title || '';
+  document.getElementById('s-hero_subtitle').value = s.hero_subtitle || '';
+  document.getElementById('s-header_cta_text').value = s.header_cta_text || 'Hubungi Admin';
+  document.getElementById('s-footer_address').value = s.footer_address || '';
+  document.getElementById('s-footer_cta_text').value = s.footer_cta_text || 'Chat WhatsApp Admin';
+  currentLogoUrl = s.logo_url || '';
+  if (currentLogoUrl) {
+    const img = document.getElementById('logo-preview');
+    img.src = currentLogoUrl;
+    img.classList.remove('hidden');
+  }
+}
+
+async function saveSettings() {
+  const fd = new FormData();
+  fd.append('whatsapp', document.getElementById('s-whatsapp').value);
+  fd.append('wa_message', document.getElementById('s-wa_message').value);
+  fd.append('hero_title', document.getElementById('s-hero_title').value);
+  fd.append('hero_subtitle', document.getElementById('s-hero_subtitle').value);
+  fd.append('header_cta_text', document.getElementById('s-header_cta_text').value);
+  fd.append('footer_address', document.getElementById('s-footer_address').value);
+  fd.append('footer_cta_text', document.getElementById('s-footer_cta_text').value);
+  fd.append('existing_logo', currentLogoUrl);
+  const logoFile = document.getElementById('s-logo').files[0];
+  if (logoFile) fd.append('logo', logoFile);
+
+  const res = await fetch(`${API}/admin/settings.php`, {
+    method: 'POST',
+    credentials: 'include',
+    body: fd,
+  });
+  const data = await res.json();
+  showMsg(document.getElementById('settings-msg'), res.ok ? 'Tersimpan.' : (data.error || 'Gagal menyimpan'), res.ok);
+  if (res.ok) {
+    currentLogoUrl = data.logo_url || currentLogoUrl;
+    document.getElementById('s-logo').value = '';
+  }
+}
+
+// ---------- Nav menu ----------
+let navCache = [];
+async function loadNav() {
+  const res = await fetch(`${API}/admin/nav.php`, { credentials: 'include' });
+  navCache = await res.json();
+  document.getElementById('nav-list').innerHTML = navCache.map(n => `
+    <div class="row">
+      <div class="info"><b>${n.label}</b>${n.href}</div>
+      <div class="row-actions">
+        <button class="btn secondary" onclick="editNavById(${n.id})">Edit</button>
+        <button class="btn danger" onclick="deleteNav(${n.id})">Hapus</button>
+      </div>
+    </div>
+  `).join('') || '<p style="color:#888;font-size:13px;">Belum ada menu.</p>';
+}
+
+function editNavById(id) {
+  const n = navCache.find(x => x.id === id);
+  if (n) editNav(n);
+}
+
+function editNav(n) {
+  document.getElementById('n-id').value = n.id;
+  document.getElementById('n-label').value = n.label;
+  document.getElementById('n-href').value = n.href;
+}
+
+function resetNavForm() {
+  document.getElementById('n-id').value = '';
+  document.getElementById('n-label').value = '';
+  document.getElementById('n-href').value = '';
+}
+
+async function saveNav() {
+  const id = document.getElementById('n-id').value;
+  const body = { label: document.getElementById('n-label').value, href: document.getElementById('n-href').value };
+  if (id) body.id = id;
+  const res = await fetch(`${API}/admin/nav.php`, {
+    method: 'POST', credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  const data = await res.json();
+  showMsg(document.getElementById('nav-msg'), res.ok ? 'Menu tersimpan.' : (data.error || 'Gagal menyimpan'), res.ok);
+  if (res.ok) { resetNavForm(); loadNav(); }
+}
+
+async function deleteNav(id) {
+  if (!confirm('Hapus menu ini?')) return;
+  await fetch(`${API}/admin/nav.php`, {
+    method: 'DELETE', credentials: 'include',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `id=${id}`,
+  });
+  loadNav();
+}
+
+// ---------- Fleets ----------
+let fleetsCache = [];
+async function loadFleets() {
+  const res = await fetch(`${API}/admin/fleets.php`, { credentials: 'include' });
+  fleetsCache = await res.json();
+  document.getElementById('fleet-list').innerHTML = fleetsCache.map(f => `
+    <div class="row">
+      <img src="${f.image}" onerror="this.style.visibility='hidden'" />
+      <div class="info"><b>${f.name}</b>${f.price} · ${f.capacity}</div>
+      <div class="row-actions">
+        <button class="btn secondary" onclick="editFleetById(${f.id})">Edit</button>
+        <button class="btn danger" onclick="deleteFleet(${f.id})">Hapus</button>
+      </div>
+    </div>
+  `).join('') || '<p style="color:#888;font-size:13px;">Belum ada armada.</p>';
+}
+
+function editFleetById(id) {
+  const f = fleetsCache.find(x => x.id === id);
+  if (f) editFleet(f);
+}
+
+function editFleet(f) {
+  document.getElementById('f-id').value = f.id;
+  document.getElementById('f-name').value = f.name;
+  document.getElementById('f-price').value = f.price;
+  document.getElementById('f-capacity').value = f.capacity;
+  document.getElementById('f-id').dataset.existingImage = f.image;
+  document.getElementById('f-name').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function resetFleetForm() {
+  document.getElementById('f-id').value = '';
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-price').value = '';
+  document.getElementById('f-capacity').value = '';
+  document.getElementById('f-image').value = '';
+}
+
+async function saveFleet() {
+  const id = document.getElementById('f-id').value;
+  const fd = new FormData();
+  if (id) fd.append('id', id);
+  fd.append('name', document.getElementById('f-name').value);
+  fd.append('price', document.getElementById('f-price').value);
+  fd.append('capacity', document.getElementById('f-capacity').value);
+  fd.append('existing_image', document.getElementById('f-id').dataset.existingImage || '');
+  const fileInput = document.getElementById('f-image');
+  if (fileInput.files[0]) fd.append('image', fileInput.files[0]);
+
+  const res = await fetch(`${API}/admin/fleets.php`, { method: 'POST', credentials: 'include', body: fd });
+  const data = await res.json();
+  showMsg(document.getElementById('fleet-msg'), res.ok ? 'Armada tersimpan.' : (data.error || 'Gagal menyimpan'), res.ok);
+  if (res.ok) { resetFleetForm(); loadFleets(); }
+}
+
+async function deleteFleet(id) {
+  if (!confirm('Hapus armada ini?')) return;
+  await fetch(`${API}/admin/fleets.php`, {
+    method: 'DELETE', credentials: 'include',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `id=${id}`,
+  });
+  loadFleets();
+}
+
+// Cek sesi login
+(async () => {
+  const res = await fetch(`${API}/admin/settings.php`, { credentials: 'include' });
+  if (res.ok) initPanel();
+})();
+</script>
+</body>
+</html>
