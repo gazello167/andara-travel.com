@@ -1,0 +1,20 @@
+{
+  "whatsapp": "6287777293473",
+  "wa_message": "Halo Andra Travel, saya ingin tanya sewa mobil di Bandung",
+  "hero_title": "Sewa Mobil & Carter Murah Bandung Plus Sopir",
+  "hero_subtitle": "Layanan transportasi terpercaya di Bandung untuk keperluan wisata, dinas, dan perorangan.",
+  "fleets": [
+    {
+      "name": "Toyota Avanza",
+      "price": "Rp 650.000 / hari",
+      "capacity": "6 Orang",
+      "image": "/andaratravel/uploads/avanza.jpg"
+    },
+    {
+      "name": "Toyota HiAce Commuter",
+      "price": "Rp 1.350.000 / hari",
+      "capacity": "14 Orang",
+      "image": "/andaratravel/uploads/hiace.jpg"
+    }
+  ]
+}

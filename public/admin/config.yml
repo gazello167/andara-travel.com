@@ -1,0 +1,29 @@
+backend:
+  name: git-gateway
+  branch: main
+  identity_url: https://andaratravel.netlify.app/.netlify/identity
+  gateway_url: https://andaratravel.netlify.app/.netlify/git
+
+media_folder: "public/uploads"
+public_folder: "/uploads"
+
+collections:
+  - name: "content"
+    label: "Konten Landing Page"
+    files:
+      - file: "src/data/landing.json"
+        label: "Data Utama Travel"
+        name: "landing_data"
+        fields:
+          - { label: "Nomor WhatsApp (Format: 628xxx)", name: "whatsapp", widget: "string" }
+          - { label: "Pesan Default WA", name: "wa_message", widget: "string" }
+          - { label: "Judul Utama Hero", name: "hero_title", widget: "string" }
+          - { label: "Subjudul Hero", name: "hero_subtitle", widget: "text" }
+          - label: "Daftar Armada Mobil"
+            name: "fleets"
+            widget: "list"
+            fields:
+              - { label: "Nama Mobil", name: "name", widget: "string" }
+              - { label: "Harga per Hari", name: "price", widget: "string" }
+              - { label: "Kapasitas Penumpang", name: "capacity", widget: "string" }
+              - { label: "Foto Mobil", name: "image", widget: "image" }
