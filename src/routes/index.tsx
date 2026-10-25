@@ -194,7 +194,7 @@ const [content, setContent] = useState<{
   } | null>(null);
 
   useEffect(() => {
-    fetch("/andaratravel/api/content.php")
+    fetch("/api/content.php")
       .then((res) => res.json())
       .then(setContent)
       .catch(() => {});
@@ -216,7 +216,7 @@ const [content, setContent] = useState<{
   price: f.price,
   desc: f.capacity,
   seats: f.capacity,
-  img: f.image.startsWith("http") ? f.image : `https://bandung-tour.com${f.image}`,
+  img: f.image.startsWith("http") ? f.image : `https://andara-travel.com${f.image}`,
 }));
   
   return (
