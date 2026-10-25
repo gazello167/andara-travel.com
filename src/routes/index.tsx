@@ -225,6 +225,7 @@ const [content, setContent] = useState<{
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-2">
           <div className="flex items-center gap-2">
+<a href="/" className="flex items-center gap-2">		  
   {content?.logo_url ? (
     <img src={content.logo_url} alt="Andara Travel" className="h-12 w-auto" />
   ) : (
@@ -236,6 +237,7 @@ const [content, setContent] = useState<{
     <p className="font-display text-base font-extrabold tracking-tight">Andara Travel</p>
     <p className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">Bandung</p>
   </div>
+</a>  
 </div>
           <nav className="hidden items-center gap-7 text-sm font-medium text-muted-foreground md:flex">
   {(content?.nav_items || []).map((item) => (
